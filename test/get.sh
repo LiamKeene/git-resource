@@ -612,6 +612,23 @@ it_can_get_committer_email() {
     ( echo "Committer email not found."; return 1 )
 }
 
+it_can_get_branch_name() {
+  local repo=$(init_repo)
+  local ref1=$(make_commit_to_branch $repo branch-a)
+  local dest=$TMPDIR/destination
+  local expected_content="branch-a"
+
+  get_uri_at_branch $repo "branch-a" $dest | jq -e "
+    .version == {ref: $(echo $ref1 | jq -R .)}
+  "
+
+  test -e $dest/.git/branch || \
+    ( echo ".git/branch does not exist."; return 1 )
+
+  test "$(cat $dest/.git/branch)" = "$expected_content" || \
+    ( echo "Branch name does not match."; return 1 )
+}
+
 it_can_get_returned_ref() {
   local repo=$(init_repo)
   local ref=$(make_commit $repo)
@@ -747,6 +764,7 @@ run it_cant_get_signed_commit_when_using_keyserver_and_unknown_key_id
 run it_can_get_signed_commit_when_using_keyserver
 run it_can_get_signed_commit_via_tag
 run it_can_get_committer_email
+run it_can_get_branch_name
 run it_can_get_returned_ref
 run it_can_get_commit_message
 run it_decrypts_git_crypted_files

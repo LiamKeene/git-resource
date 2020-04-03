@@ -230,6 +230,8 @@ the case.
    resource like [mdomke/concourse-email-resource](https://github.com/mdomke/concourse-email-resource)
    to notify the committer in an on_failure step.
 
+  * `.git/branch`: Contains the current branch name.
+
  * `.git/ref`: Version reference detected and checked out. It will usually contain
    the commit SHA-1 ref, but also the detected tag name when using `tag_filter`.
 
